@@ -1,6 +1,8 @@
 const express = require('express');
 const app = express();
 
+app.set('view engine', 'ejs');
+
 const PORT = 8080;
 
 const urlDatabase = {
@@ -9,11 +11,11 @@ const urlDatabase = {
 };
 
 app.get("/", (req, res) => {
-  res.send("Hello!");
+  res.render('pages/index');
 });
 
-app.get("/urls.json", (req, res) => {
-  res.json(urlDatabase);
+app.get("/about", (req, res) => {
+  res.render('pages/about');
 });
 
 app.get('/hello', (req, res) => {
