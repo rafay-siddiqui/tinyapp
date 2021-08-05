@@ -43,8 +43,7 @@ app.post('/urls',(req, res) => {
   console.log(req.body);
   const newUrl = uniqueStringCheck();
   urlDatabase[newUrl] = req.body.longURL;
-  const templateVars = { urls: urlDatabase };
-  res.render('urls_show', templateVars);
+  res.redirect(`/urls/${newUrl}`);
 });
 
 app.get('/urls/new', (req, res) => {
