@@ -32,6 +32,7 @@ const uniqueStringCheck = () => {
   }
 };
 
+// /url page render and root page redirection
 app.get("/", (req, res) => {
   res.redirect("/urls")
 });
@@ -41,6 +42,7 @@ app.get("/urls", (req, res) => {
   res.render('urls_index', templateVars);
 });
 
+//Create URL form submission and redirection to shortURL page
 app.post('/urls',(req, res) => {
   console.log(req.body);
   const newUrl = uniqueStringCheck();
@@ -60,10 +62,11 @@ app.get('/urls/:shortURL', (req, res) => {
 
 //Short URL Redirection
 app.get("/u/:shortURL", (req, res) => {
-  // const longURL = ...
+  const longURL = urlDatabase[req.params.shortURL]
   res.redirect(longURL);
 });
 
+//Server listens for client requests
 app.listen(PORT, () => {
   console.log(`Example app is listening on ${PORT}!`);
 });
