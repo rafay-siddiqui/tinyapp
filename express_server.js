@@ -21,6 +21,15 @@ function generateRandomString() {
   return(randomString);
 };
 
+const uniqueStringCheck = () => {
+  const newUrl = generateRandomString();
+  if (!urlDatabase[newUrl]) {
+    return newUrl;
+  } else {
+    uniqueStringCheck();
+  }
+};
+
 app.get("/", (req, res) => {
   res.send ("There's nothing here yet. Go to /urls")
 });
@@ -32,7 +41,10 @@ app.get("/urls", (req, res) => {
 
 app.post('/urls',(req, res) => {
   console.log(req.body);
-  res.send("Ok");
+  const newUrl = uniqueStringCheck();
+  urlDatabase[newUrl] = req.body.longURL;
+  const templateVars = { urls: urlDatabase };
+  res.render('urls_show', templateVars);
 });
 
 app.get('/urls/new', (req, res) => {
