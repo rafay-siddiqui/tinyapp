@@ -1,3 +1,4 @@
+//Configuration of libraries and port
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
@@ -12,6 +13,7 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+//Random string generation and uniqueness check
 function generateRandomString() {
   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   let randomString = '';
@@ -31,7 +33,7 @@ const uniqueStringCheck = () => {
 };
 
 app.get("/", (req, res) => {
-  res.send ("There's nothing here yet. Go to /urls")
+  res.redirect("/urls")
 });
 
 app.get("/urls", (req, res) => {
@@ -50,9 +52,16 @@ app.get('/urls/new', (req, res) => {
   res.render('urls_new');
 })
 
+//Short URL Page
 app.get('/urls/:shortURL', (req, res) => {
   const templateVars = {shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL]};
   res.render('urls_show', templateVars);
+});
+
+//Short URL Redirection
+app.get("/u/:shortURL", (req, res) => {
+  // const longURL = ...
+  res.redirect(longURL);
 });
 
 app.listen(PORT, () => {
