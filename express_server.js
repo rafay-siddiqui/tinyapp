@@ -1,8 +1,10 @@
 const express = require('express');
 const app = express();
+const bodyParser = require('body-parser');
 const PORT = 8080;
 
 app.set('view engine', 'ejs');
+app.use(bodyParser.urlencoded({extended: true}));
 
 
 const urlDatabase = {
@@ -10,23 +12,32 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+function generateRandomString() {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let randomString = '';
+  for (let i=0; i < 6; i++) {
+    randomString += chars[Math.floor(Math.random()*62)]
+  };
+  return(randomString);
+};
+
 app.get("/", (req, res) => {
-  var mascots = [
-    { name: 'Sammy', organization: "DigitalOcean", birth_year: 2012 },
-    { name: 'Tux', organization: "Linux", birth_year: 1996 },
-    { name: 'Moby Dock', organization: "Docker", birth_year: 2013 }
-  ];
-  var tagline = "No programming concept is complete without a cute animal mascot.";
-  res.render('pages/index', {
-    mascots: mascots,
-    tagline: tagline
-  });
+  res.send ("There's nothing here yet. Go to /urls")
 });
 
 app.get("/urls", (req, res) => {
   const templateVars = { urls: urlDatabase };
   res.render('urls_index', templateVars);
 });
+
+app.post('/urls',(req, res) => {
+  console.log(req.body);
+  res.send("Ok");
+});
+
+app.get('/urls/new', (req, res) => {
+  res.render('urls_new');
+})
 
 app.get('/urls/:shortURL', (req, res) => {
   const templateVars = {shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL]};
