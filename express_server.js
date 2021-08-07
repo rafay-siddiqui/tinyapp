@@ -44,7 +44,6 @@ app.get("/urls", (req, res) => {
 
 //Create URL form submission and redirection to shortURL page
 app.post('/urls',(req, res) => {
-  console.log(req.body);
   const newUrl = uniqueStringCheck();
   urlDatabase[newUrl] = req.body.longURL;
   res.redirect(`/urls/${newUrl}`);
@@ -58,6 +57,12 @@ app.get('/urls/new', (req, res) => {
 app.get('/urls/:shortURL', (req, res) => {
   const templateVars = {shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL]};
   res.render('urls_show', templateVars);
+});
+
+//Update URL
+app.post('/urls/:id', (req, res) => {
+  urlDatabase[req.params.id] = req.body.longURL
+  res.redirect('/urls');
 });
 
 //Short URL Redirection
