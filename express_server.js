@@ -8,7 +8,7 @@ const {
   users, 
   generateRandomString, 
   uniqueStringGenerator,
-  emailExists,
+  emailLookup,
 
 } = require('./server_config');
 
@@ -76,7 +76,15 @@ app.get('/login', (req, res) => {
 });
 
 app.post('/login',(req, res) => {
-  console.log("No login logic yet");
+  if (!emailLookup(req.body.email)) {
+    return res.status(403).send("Error 403: No Account With Given Email");
+  }
+  let user = emailLookup(req.body.email);
+  if (req.body.password !== users[user].password) {
+    console.log("given:", req.body.password, "actual:", users[user].password);
+    return res.status(403).send("Error 403: Incorrect Password");
+  }
+  res.cookie('user_id', user);
   res.redirect('/urls');
 })
 
@@ -99,7 +107,7 @@ app.post('/register', (req, res) => {
   const new_user = uniqueStringGenerator();
   if (!req.body.email || !req.body.password) {
     return res.status(400).send("Error 400: Empty Email or Password");
-  } else if (emailExists(req.body.email)) {
+  } else if (emailLookup(req.body.email)) {
     return res.status(400).send("Error 400: Email already registered");
   }
   users[new_user] = {

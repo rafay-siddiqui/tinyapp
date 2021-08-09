@@ -27,6 +27,11 @@ const users = {
     id: "user2RandomID", 
     email: "user2@example.com", 
     password: "dishwasher-funk"
+  },
+  "theRaf": {
+    id: "theRaf", 
+    email: "rafays.siddiqui@gmail.com", 
+    password: "wasd"
   }
 }
 
@@ -58,6 +63,15 @@ const emailExists = (email) => {
   return false;
 };
 
+const emailLookup = (email) => {
+  for (let user in users) {
+    if (users[user].email === email) {
+      return user;
+    }
+  }
+  return undefined;
+};
+
 module.exports = {
 express,
 app,
@@ -69,5 +83,6 @@ users,
 generateRandomString,
 uniqueStringGenerator,
 emailExists,
+emailLookup,
 
 };
