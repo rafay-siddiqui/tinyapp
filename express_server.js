@@ -6,6 +6,7 @@ const {
   uniqueStringGenerator,
   emailLookup,
   getUserURLs,
+  bcrypt,
 
 } = require('./server_config');
 
@@ -106,7 +107,7 @@ app.post('/login', (req, res) => {
     return res.status(403).send("Error 403: No Account With Given Email");
   }
   let user = emailLookup(req.body.email);
-  if (req.body.password !== users[user].password) {
+  if (!bcrypt.compareSync(req.body.password, users[user].password)) {
     return res.status(403).send("Error 403: Incorrect Password");
   }
   res.cookie('user_id', user);
@@ -138,7 +139,7 @@ app.post('/register', (req, res) => {
   users[newUser] = {
     id: newUser,
     email: req.body.email,
-    password: req.body.password,
+    password: bcrypt.hashSync(req.body.password, 10),
   };
   res.cookie('user_id', newUser);
   res.redirect('/urls');

@@ -3,6 +3,7 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const bcrypt = require('bcrypt');
 const PORT = 8080;
 
 app.set('view engine', 'ejs');
@@ -31,17 +32,17 @@ const users = {
   "userRandomID": {
     id: "userRandomID",
     email: "user@example.com",
-    password: "purple-monkey-dinosaur"
+    password: bcrypt.hashSync("purple-monkey-dinosaur",10),
   },
   "aJ48lW": {
     id: "aJ48lW",
     email: "user2@example.com",
-    password: "dishwasher-funk"
+    password: bcrypt.hashSync("dishwasher-funk",10),
   },
   "theRaf": {
     id: "theRaf",
     email: "rafays.siddiqui@gmail.com",
-    password: "wasd"
+    password: bcrypt.hashSync("wasd",10),
   }
 };
 
@@ -92,5 +93,6 @@ module.exports = {
   uniqueStringGenerator,
   emailLookup,
   getUserURLs,
+  bcrypt,
 
 };
