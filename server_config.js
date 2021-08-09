@@ -2,47 +2,53 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser')
+const cookieParser = require('cookie-parser');
 const PORT = 8080;
 
 app.set('view engine', 'ejs');
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 
 //Object storing all the shortened urls
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  b6UTxQ: {
+    longURL: "https://www.tsn.ca",
+    userID: "aJ48lW"
+  },
+  i3BoGr: {
+    longURL: "https://www.google.ca",
+    userID: "aJ48lW"
+  },
 };
 
 //Object storing all the users' ids, emails, and passwords
-const users = { 
+const users = {
   "userRandomID": {
-    id: "userRandomID", 
-    email: "user@example.com", 
+    id: "userRandomID",
+    email: "user@example.com",
     password: "purple-monkey-dinosaur"
   },
- "user2RandomID": {
-    id: "user2RandomID", 
-    email: "user2@example.com", 
+  "user2RandomID": {
+    id: "user2RandomID",
+    email: "user2@example.com",
     password: "dishwasher-funk"
   },
   "theRaf": {
-    id: "theRaf", 
-    email: "rafays.siddiqui@gmail.com", 
+    id: "theRaf",
+    email: "rafays.siddiqui@gmail.com",
     password: "wasd"
   }
-}
+};
 
 //Random string generation and uniqueness check
-function generateRandomString() {
+const generateRandomString = () => {
   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   let randomString = '';
-  for (let i=0; i < 6; i++) {
-    randomString += chars[Math.floor(Math.random()*62)]
-  };
-  return(randomString);
+  for (let i = 0; i < 6; i++) {
+    randomString += chars[Math.floor(Math.random() * 62)];
+  }
+  return (randomString);
 };
 
 const uniqueStringGenerator = () => {
@@ -64,15 +70,11 @@ const emailLookup = (email) => {
 };
 
 module.exports = {
-express,
-app,
-bodyParser,
-cookieParser,
-PORT,
-urlDatabase,
-users,
-generateRandomString,
-uniqueStringGenerator,
-emailLookup,
+  app,
+  PORT,
+  urlDatabase,
+  users,
+  uniqueStringGenerator,
+  emailLookup,
 
 };
