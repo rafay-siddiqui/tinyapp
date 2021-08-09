@@ -97,8 +97,10 @@ app.get('/register', (req, res) => {
 //Store New User
 app.post('/register', (req, res) => {
   const new_user = uniqueStringGenerator();
-  if (!req.body.email || !req.body.password || emailExists(req.body.email)) {
-    return res.status(400).send("Error 400: Bad Request");
+  if (!req.body.email || !req.body.password) {
+    return res.status(400).send("Error 400: Empty Email or Password");
+  } else if (emailExists(req.body.email)) {
+    return res.status(400).send("Error 400: Email already registered");
   }
   users[new_user] = {
     id: new_user,
