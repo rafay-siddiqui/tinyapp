@@ -5,6 +5,7 @@ const {
   users,
   uniqueStringGenerator,
   emailLookup,
+  getUserURLs,
 
 } = require('./server_config');
 
@@ -14,18 +15,22 @@ app.get("/", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
+  const userID = req.cookies.user_id
   const templateVars = {
-    user: users[req.cookies.user_id],
-    urls: urlDatabase
+    user: users[userID],
+    urls: getUserURLs(userID)
   };
   res.render('urls_index', templateVars);
 });
 
-//Create URL form submission and redirection to shortURL page
+//Create new URL form submission and redirection to shortURL page
 app.post('/urls', (req, res) => {
   const newUrl = uniqueStringGenerator();
   if (req.cookies.user_id) {
-    urlDatabase[newUrl] = req.body.longURL;
+    urlDatabase[newUrl] = {
+      longURL: req.body.longURL,
+      userID: req.cookies.user_id,
+    };
     res.redirect(`/urls/${newUrl}`);
   } else {
     return res.status(401).send("Error 403: Unauthorized Client Access\n");
@@ -48,23 +53,24 @@ app.get('/urls/:shortURL', (req, res) => {
   const templateVars = {
     user: users[req.cookies.user_id],
     shortURL: req.params.shortURL,
-    longURL: urlDatabase[req.params.shortURL]
+    longURL: urlDatabase[req.params.shortURL].longURL,
   };
   res.render('urls_show', templateVars);
 });
 
-//Update URL
-app.post('/urls/:id', (req, res) => {
-  urlDatabase[req.params.id] = req.body.longURL;
-  res.redirect('/urls');
-});
-
 //Short URL Redirection
 app.get("/u/:shortURL", (req, res) => {
-  const longURL = urlDatabase[req.params.shortURL];
+  const longURL = urlDatabase[req.params.shortURL].longURL;
   res.redirect(longURL);
 });
 
+//Update URL
+app.post('/urls/:id', (req, res) => {
+  urlDatabase[req.params.id].longURL = req.body.longURL;
+  res.redirect('/urls');
+});
+
+//Delete URL
 app.post('/urls/:shortURL/delete', (req, res) => {
   delete urlDatabase[req.params.shortURL];
   res.redirect('/urls');

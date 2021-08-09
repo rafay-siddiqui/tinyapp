@@ -20,6 +20,10 @@ const urlDatabase = {
     longURL: "https://www.google.ca",
     userID: "aJ48lW"
   },
+  thePed: {
+    longURL: "https://www.pedicel.ca",
+    userID: "theRaf"
+  },
 };
 
 //Object storing all the users' ids, emails, and passwords
@@ -29,8 +33,8 @@ const users = {
     email: "user@example.com",
     password: "purple-monkey-dinosaur"
   },
-  "user2RandomID": {
-    id: "user2RandomID",
+  "aJ48lW": {
+    id: "aJ48lW",
     email: "user2@example.com",
     password: "dishwasher-funk"
   },
@@ -69,6 +73,17 @@ const emailLookup = (email) => {
   return undefined;
 };
 
+const getUserURLs = (user) => {
+  let shortURLs = {};
+  for (let link in urlDatabase) {
+    if (user === urlDatabase[link].userID)
+      shortURLs[link] = urlDatabase[link].longURL;
+  }
+  return shortURLs;
+};
+
+console.log(getUserURLs("aJ48lW"));
+
 module.exports = {
   app,
   PORT,
@@ -76,5 +91,6 @@ module.exports = {
   users,
   uniqueStringGenerator,
   emailLookup,
+  getUserURLs,
 
 };
