@@ -60,6 +60,9 @@ app.get('/urls/:shortURL', (req, res) => {
 
 //Short URL Redirection
 app.get("/u/:shortURL", (req, res) => {
+  if (!urlDatabase[req.params.shortURL]) {
+    return res.status(404).send("Error 404: Short URL Not Found");
+  }
   const longURL = urlDatabase[req.params.shortURL].longURL;
   res.redirect(longURL);
 });
@@ -67,7 +70,8 @@ app.get("/u/:shortURL", (req, res) => {
 //Update URL
 app.post('/urls/:id', (req, res) => {
   urlDatabase[req.params.id].longURL = req.body.longURL;
-  res.redirect('/urls');
+    res.redirect('/urls');
+
 });
 
 //Delete URL
