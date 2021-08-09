@@ -10,11 +10,11 @@
 </head>
 <body>
   <header>
-    <nav class="navbar text-center navbar-dark bg-success">
-      <a class="navbar-brand mx-auto" href="/urls"><h2>TinyApp</h2></a>
-    </nav>
-  </header>
+    <%- include('partials/_header') %>
+    </header>
 
+<div class="card bg-light">
+<h1 class="text-center pt-3">Login</h1>
 <form class="card text-center m-5 p-5 bg-dark" action="/login" method="POST">
   <div class ="form-group text-left"> 
     <label class="form-group text-white" style="text-align: left;">Log in to Your Account:</label>
@@ -25,6 +25,7 @@
   </div>
   <button type="submit" formmethod="POST" class="btn btn-primary" style="width: 300px;">Log in</button>
 </form>
+</div>
 
 </body>
 

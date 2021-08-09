@@ -66,13 +66,21 @@ app.post('/urls/:shortURL/delete', (req, res) => {
   res.redirect('/urls');
 });
 
-//Username Log in POST cookie handling
+//Email Log in GET and POST cookie handling
+
+app.get('/login', (req, res) => {
+  const templateVars = {
+    user: users[req.cookies.user_id],
+  };
+  res.render('login',templateVars);
+});
+
 app.post('/login',(req, res) => {
-  res.cookie("username", req.body.username)
+  console.log("No login logic yet");
   res.redirect('/urls');
 })
 
-//Username Log out POST cookie clearing
+//Email Log out POST cookie clearing
 app.post('/logout', (req, res) => {
   res.clearCookie("user_id");
   res.redirect('/urls');
@@ -80,7 +88,10 @@ app.post('/logout', (req, res) => {
 
 //Registration page
 app.get('/register', (req, res) => {
-  res.render('register');
+  const templateVars = {
+    user: users[req.cookies.user_id],
+  };
+  res.render('register',templateVars);
 });
 
 //Store New User
