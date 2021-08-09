@@ -1,38 +1,4 @@
-//Configuration of libraries and port
-const express = require('express');
-const app = express();
-const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser')
-const PORT = 8080;
-
-app.set('view engine', 'ejs');
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(cookieParser());
-
-
-const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
-};
-
-//Random string generation and uniqueness check
-function generateRandomString() {
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  let randomString = '';
-  for (let i=0; i < 6; i++) {
-    randomString += chars[Math.floor(Math.random()*62)]
-  };
-  return(randomString);
-};
-
-const uniqueStringCheck = () => {
-  const newUrl = generateRandomString();
-  if (!urlDatabase[newUrl]) {
-    return newUrl;
-  } else {
-    uniqueStringCheck();
-  }
-};
+const { express, app, bodyParser, cookieParser, PORT, urlDatabase, users, generateRandomString, uniqueStringCheck } = require('./server_config');
 
 // /url page render and root page redirection
 app.get("/", (req, res) => {
@@ -98,6 +64,11 @@ app.post('/login',(req, res) => {
 app.post('/logout', (req, res) => {
   res.clearCookie("username");
   res.redirect('/urls');
+});
+
+//Registration page
+app.get('/register', (req, res) => {
+  res.render('register');
 });
 
 //Server listens for client requests
