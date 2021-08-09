@@ -34,7 +34,7 @@ app.post('/urls',(req, res) => {
 
 app.get('/urls/new', (req, res) => {
   const templateVars = {
-    username: req.cookies["username"],
+    user: users[req.cookies.user_id],
   };
   res.render('urls_new', templateVars);
 })
@@ -42,7 +42,7 @@ app.get('/urls/new', (req, res) => {
 //Short URL Page
 app.get('/urls/:shortURL', (req, res) => {
   const templateVars = {
-    username: req.cookies["username"], 
+    user: users[req.cookies.user_id], 
     shortURL: req.params.shortURL, 
     longURL: urlDatabase[req.params.shortURL]
   };
@@ -86,10 +86,9 @@ app.get('/register', (req, res) => {
 //Store New User
 app.post('/register', (req, res) => {
   const new_user = uniqueStringGenerator();
-  if (!req.body.email || !req.body.password) {
+  if (!req.body.email || !req.body.password || emailExists(req.body.email)) {
     return res.status(400).send("Error 400: Bad Request");
   }
-  console.log(emailExists(req.body.email));
   users[new_user] = {
     id: new_user,
     email: req.body.email,
@@ -97,7 +96,6 @@ app.post('/register', (req, res) => {
   }
   res.cookie('user_id', new_user);
   res.redirect('/urls');
-  console.log(users);
 });
 
 //Server listens for client requests

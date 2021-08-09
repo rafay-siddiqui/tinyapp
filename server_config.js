@@ -51,7 +51,7 @@ const uniqueStringGenerator = () => {
 
 const emailExists = (email) => {
   for (let user in users) {
-    if (user.email == email) {
+    if (users[user].email === email) {
       return true;
     }
   }
