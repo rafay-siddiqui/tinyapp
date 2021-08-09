@@ -73,7 +73,6 @@ urlDatabase,
 users,
 generateRandomString,
 uniqueStringGenerator,
-emailExists,
 emailLookup,
 
 };
