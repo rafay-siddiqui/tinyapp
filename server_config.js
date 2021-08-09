@@ -40,13 +40,22 @@ function generateRandomString() {
   return(randomString);
 };
 
-const uniqueStringCheck = () => {
+const uniqueStringGenerator = () => {
   const newUrl = generateRandomString();
   if (!urlDatabase[newUrl]) {
     return newUrl;
   } else {
-    uniqueStringCheck();
+    uniqueStringGenerator();
   }
+};
+
+const emailExists = (email) => {
+  for (let user in users) {
+    if (user.email == email) {
+      return true;
+    }
+  }
+  return false;
 };
 
 module.exports = {
@@ -58,6 +67,7 @@ PORT,
 urlDatabase,
 users,
 generateRandomString,
-uniqueStringCheck,
+uniqueStringGenerator,
+emailExists,
 
 };

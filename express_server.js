@@ -1,4 +1,16 @@
-const { express, app, bodyParser, cookieParser, PORT, urlDatabase, users, generateRandomString, uniqueStringCheck } = require('./server_config');
+const { 
+  express, 
+  app, 
+  bodyParser, 
+  cookieParser, 
+  PORT, 
+  urlDatabase, 
+  users, 
+  generateRandomString, 
+  uniqueStringGenerator,
+  emailExists,
+
+} = require('./server_config');
 
 // /url page render and root page redirection
 app.get("/", (req, res) => {
@@ -7,7 +19,7 @@ app.get("/", (req, res) => {
 
 app.get("/urls", (req, res) => {
   const templateVars = { 
-    username: req.cookies["username"],
+    user: users[req.cookies.user_id],
     urls: urlDatabase 
   };
   res.render('urls_index', templateVars);
@@ -15,7 +27,7 @@ app.get("/urls", (req, res) => {
 
 //Create URL form submission and redirection to shortURL page
 app.post('/urls',(req, res) => {
-  const newUrl = uniqueStringCheck();
+  const newUrl = uniqueStringGenerator();
   urlDatabase[newUrl] = req.body.longURL;
   res.redirect(`/urls/${newUrl}`);
 });
@@ -62,13 +74,30 @@ app.post('/login',(req, res) => {
 
 //Username Log out POST cookie clearing
 app.post('/logout', (req, res) => {
-  res.clearCookie("username");
+  res.clearCookie("user_id");
   res.redirect('/urls');
 });
 
 //Registration page
 app.get('/register', (req, res) => {
   res.render('register');
+});
+
+//Store New User
+app.post('/register', (req, res) => {
+  const new_user = uniqueStringGenerator();
+  if (!req.body.email || !req.body.password) {
+    return res.status(400).send("Error 400: Bad Request");
+  }
+  console.log(emailExists(req.body.email));
+  users[new_user] = {
+    id: new_user,
+    email: req.body.email,
+    password: req.body.password,
+  }
+  res.cookie('user_id', new_user);
+  res.redirect('/urls');
+  console.log(users);
 });
 
 //Server listens for client requests
