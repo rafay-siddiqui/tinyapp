@@ -15,12 +15,17 @@ app.get("/", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  const userID = req.cookies.user_id
+  const userID = req.cookies.user_id;
   const templateVars = {
     user: users[userID],
-    urls: getUserURLs(userID)
+    urls: getUserURLs(userID),
+    userID,
   };
+  if (userID) {
   res.render('urls_index', templateVars);
+  } else {
+    res.status(401).send("Error 401: Unauthorized Client Acces\n")
+  }
 });
 
 //Create new URL form submission and redirection to shortURL page
@@ -33,7 +38,7 @@ app.post('/urls', (req, res) => {
     };
     res.redirect(`/urls/${newUrl}`);
   } else {
-    return res.status(401).send("Error 403: Unauthorized Client Access\n");
+    return res.status(401).send("Error 401: Unauthorized Client Access\n");
   }
 });
 
@@ -58,6 +63,18 @@ app.get('/urls/:shortURL', (req, res) => {
   res.render('urls_show', templateVars);
 });
 
+//Update URL
+app.post('/urls/:id', (req, res) => {
+  urlDatabase[req.params.id].longURL = req.body.longURL;
+  res.redirect('/urls');
+});
+
+//Delete URL
+app.post('/urls/:shortURL/delete', (req, res) => {
+  delete urlDatabase[req.params.shortURL];
+  res.redirect('/urls');
+});
+
 //Short URL Redirection
 app.get("/u/:shortURL", (req, res) => {
   if (!urlDatabase[req.params.shortURL]) {
@@ -65,19 +82,6 @@ app.get("/u/:shortURL", (req, res) => {
   }
   const longURL = urlDatabase[req.params.shortURL].longURL;
   res.redirect(longURL);
-});
-
-//Update URL
-app.post('/urls/:id', (req, res) => {
-  urlDatabase[req.params.id].longURL = req.body.longURL;
-    res.redirect('/urls');
-
-});
-
-//Delete URL
-app.post('/urls/:shortURL/delete', (req, res) => {
-  delete urlDatabase[req.params.shortURL];
-  res.redirect('/urls');
 });
 
 //Email Log in GET and POST cookie handling
