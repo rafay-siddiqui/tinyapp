@@ -28,15 +28,23 @@ app.get("/urls", (req, res) => {
 //Create URL form submission and redirection to shortURL page
 app.post('/urls',(req, res) => {
   const newUrl = uniqueStringGenerator();
+  if (req.cookies.user_id){
   urlDatabase[newUrl] = req.body.longURL;
   res.redirect(`/urls/${newUrl}`);
+  } else {
+    return res.status(401).send("Error 403: Unauthorized Client Access\n");
+  };
 });
 
 app.get('/urls/new', (req, res) => {
   const templateVars = {
     user: users[req.cookies.user_id],
   };
-  res.render('urls_new', templateVars);
+  if (req.cookies.user_id) {
+    res.render('urls_new', templateVars);
+  } else {
+    res.redirect('/login')
+  }
 })
 
 //Short URL Page
