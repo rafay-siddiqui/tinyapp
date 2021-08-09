@@ -67,7 +67,6 @@ app.post('/urls/:shortURL/delete', (req, res) => {
 });
 
 //Email Log in GET and POST cookie handling
-
 app.get('/login', (req, res) => {
   const templateVars = {
     user: users[req.cookies.user_id],

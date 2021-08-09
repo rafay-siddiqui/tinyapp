@@ -54,15 +54,6 @@ const uniqueStringGenerator = () => {
   }
 };
 
-const emailExists = (email) => {
-  for (let user in users) {
-    if (users[user].email === email) {
-      return true;
-    }
-  }
-  return false;
-};
-
 const emailLookup = (email) => {
   for (let user in users) {
     if (users[user].email === email) {
