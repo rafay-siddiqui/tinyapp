@@ -82,7 +82,7 @@ const getUserURLs = (user) => {
   return shortURLs;
 };
 
-console.log(!urlDatabase["thePed"]);
+//console.log(!urlDatabase["thePed"]);
 
 module.exports = {
   app,
