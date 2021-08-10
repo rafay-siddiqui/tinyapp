@@ -107,6 +107,7 @@ app.put('/urls/:id', (req, res) => {
 //
 app.delete('/urls/:id', (req, res) => {
   const user = req.session.user_id;
+  //checking if a shortURL exists in a user's URLs
   if (getUserURLs(user, urlDatabase)[req.params.id]) {
     delete urlDatabase[req.params.id];
     res.redirect('/urls');
