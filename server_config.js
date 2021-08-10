@@ -49,53 +49,11 @@ const users = {
   }
 };
 
-//Random string generation and uniqueness check
-const generateRandomString = () => {
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  let randomString = '';
-  for (let i = 0; i < 6; i++) {
-    randomString += chars[Math.floor(Math.random() * 62)];
-  }
-  return (randomString);
-};
-
-const uniqueStringGenerator = () => {
-  const newUrl = generateRandomString();
-  if (!urlDatabase[newUrl]) {
-    return newUrl;
-  } else {
-    uniqueStringGenerator();
-  }
-};
-
-const emailLookup = (email, database) => {
-  for (let user in database) {
-    if (database[user].email === email) {
-      return user;
-    }
-  }
-  return undefined;
-};
-
-const getUserURLs = (user) => {
-  let shortURLs = {};
-  for (let link in urlDatabase) {
-    if (user === urlDatabase[link].userID)
-      shortURLs[link] = urlDatabase[link].longURL;
-  }
-  return shortURLs;
-};
-
-//console.log(!urlDatabase["thePed"]);
 
 module.exports = {
   app,
   PORT,
   urlDatabase,
   users,
-  uniqueStringGenerator,
-  emailLookup,
-  getUserURLs,
   bcrypt,
-
 };

@@ -3,12 +3,15 @@ const {
   PORT,
   urlDatabase,
   users,
-  uniqueStringGenerator,
-  emailLookup,
-  getUserURLs,
   bcrypt,
 
 } = require('./server_config');
+
+const {
+  uniqueStringGenerator,
+  emailLookup,
+  getUserURLs,
+} = require('./helpers');
 
 // /url page render and root page redirection
 app.get("/", (req, res) => {
@@ -19,7 +22,7 @@ app.get("/urls", (req, res) => {
   const userID = req.session.user_id;
   const templateVars = {
     user: users[userID],
-    urls: getUserURLs(userID),
+    urls: getUserURLs(userID, urlDatabase),
     userID,
   };
   if (!userID) {
@@ -30,7 +33,7 @@ app.get("/urls", (req, res) => {
 
 //Create new URL form submission and redirection to shortURL page
 app.post('/urls', (req, res) => {
-  const newUrl = uniqueStringGenerator();
+  const newUrl = uniqueStringGenerator(urlDatabase);
   if (req.session.user_id) {
     urlDatabase[newUrl] = {
       longURL: req.body.longURL,
@@ -66,7 +69,7 @@ app.get('/urls/:shortURL', (req, res) => {
 //Update URL
 app.post('/urls/:id', (req, res) => {
   const user = req.session.user_id;
-  if (getUserURLs(user)[req.params.id]) {
+  if (getUserURLs(user, urlDatabase)[req.params.id]) {
     urlDatabase[req.params.id].longURL = req.body.longURL;
     res.redirect('/urls');
   } else {
@@ -77,7 +80,7 @@ app.post('/urls/:id', (req, res) => {
 //Delete URL
 app.post('/urls/:shortURL/delete', (req, res) => {
   const user = req.session.user_id;
-  if (getUserURLs(user)[req.params.shortURL]) {
+  if (getUserURLs(user, urlDatabase)[req.params.shortURL]) {
     delete urlDatabase[req.params.shortURL];
     res.redirect('/urls');
   } else {
@@ -130,7 +133,7 @@ app.get('/register', (req, res) => {
 
 //Store New User
 app.post('/register', (req, res) => {
-  const newUser = uniqueStringGenerator();
+  const newUser = uniqueStringGenerator(urlDatabase);
   if (!req.body.email || !req.body.password) {
     return res.status(400).send("Error 400: Empty Email or Password");
   } else if (emailLookup(req.body.email, users)) {
