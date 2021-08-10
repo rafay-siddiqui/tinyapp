@@ -29,7 +29,7 @@
       <tbody>
         <tr>
           <td class="p-4" style="text-align: center;">
-            <form class="form-inline text-center" action="/urls/<%=id%>" method="POST">
+            <form class="form-inline text-center" method="POST" action="/urls/<%=id%>?_method=PUT">
               <div class="form-group p-0 mb-0">
                 <input class="form-control" type="text" name="longURL" placeholder="http://" style="width: 300px; margin: 1em">
                 <button type="submit" class="btn btn-primary">Submit</button>

@@ -1,5 +1,3 @@
-const e = require("express");
-
 //Random string generation and uniqueness check
 const generateRandomString = () => {
   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";

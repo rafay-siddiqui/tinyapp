@@ -18,7 +18,7 @@ const {
 //
 app.get('/', (req, res) => {
   if (req.session.user_id) {
-  res.redirect('/urls');
+    res.redirect('/urls');
   } else {
     res.redirect('/login');
   }
@@ -59,7 +59,7 @@ app.post('/urls', (req, res) => {
     urlDatabase[newUrl] = {
       longURL: req.body.longURL,
       userID: req.session.user_id,
-      created: `${currentDate.getMonth()+1}/${currentDate.getDate()}/${currentDate.getFullYear()}`,
+      created: `${currentDate.getMonth() + 1}/${currentDate.getDate()}/${currentDate.getFullYear()}`,
       clicks: 0,
       visitors: [],
     };
@@ -75,7 +75,7 @@ app.post('/urls', (req, res) => {
 //
 app.get('/urls/:id', (req, res) => {
   if (!urlDatabase[req.params.id]) {
-    return res.status(404).send("Error 404: Short URL Not Found")
+    return res.status(404).send("Error 404: Short URL Not Found");
   }
   const templateVars = {
     user: users[req.session.user_id],
@@ -89,7 +89,7 @@ app.get('/urls/:id', (req, res) => {
 //
 //Update URL Page [POST /URLS/:ID]
 //
-app.post('/urls/:id', (req, res) => {
+app.put('/urls/:id', (req, res) => {
   const user = req.session.user_id;
   if (getUserURLs(user, urlDatabase)[req.params.id]) {
     urlDatabase[req.params.id].longURL = req.body.longURL;
@@ -102,7 +102,7 @@ app.post('/urls/:id', (req, res) => {
 //
 //Delete URL Page [POST /URLS/:ID/DELETE]
 //
-app.post('/urls/:id/delete', (req, res) => {
+app.delete('/urls/:id/delete', (req, res) => {
   const user = req.session.user_id;
   if (getUserURLs(user, urlDatabase)[req.params.id]) {
     delete urlDatabase[req.params.id];

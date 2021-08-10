@@ -38,7 +38,7 @@
               </form>
             </td>
             <td>
-              <form method="POST" action="/urls/<%= url %>/delete">
+              <form method="POST" action="/urls/<%= url %>/delete?_method=DELETE">
                 <button formmethod="POST" type="submit" class="btn btn-outline-danger">Delete</i></button>
               </form>
             </td>
@@ -50,8 +50,8 @@
       </tbody>
       </table>
       <% } else { %>
-      <div class="card bg-light">
-      <h1 class="text-center p-3">Please <a class='text-muted' href='/login'>Log In</a> to Create and Access Your Shortened URLs</h1>
+      <div class="card bg-light p-1, m-1">
+      <h1 class="text-center p-3">Please <a class='text-muted' href='/login'>Log In</a> to <br>Create and Access <br>Your Shortened URLs</h1>
       </div>
       <% }; %>
       </main>
