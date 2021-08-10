@@ -30,6 +30,7 @@ app.get('/urls', (req, res) => {
     user: users[userID],
     urls: getUserURLs(userID, urlDatabase),
     userID,
+    //passing in the urlDatabase to refer to date, clicks, and unique visitor properties
     urlDatabase,
   };
   if (!userID) {
@@ -48,6 +49,7 @@ app.get('/urls/new', (req, res) => {
   if (req.session.user_id) {
     res.render('urls_new', templateVars);
   } else {
+    //http error message 401 is in response but browser redirects to /login
     res.status(401);
     res.redirect('/login');
   }
@@ -56,6 +58,7 @@ app.get('/urls/new', (req, res) => {
 app.post('/urls', (req, res) => {
   const newUrl = uniqueStringGenerator(urlDatabase);
   if (req.session.user_id) {
+    //adding object properties for tracking date, clicks, and unique visitors
     urlDatabase[newUrl] = {
       longURL: req.body.longURL,
       userID: req.session.user_id,
@@ -87,7 +90,7 @@ app.get('/urls/:id', (req, res) => {
 });
 
 //
-//Update URL Page [POST /URLS/:ID]
+//Update URL Page [PUT /URLS/:ID]
 //
 app.put('/urls/:id', (req, res) => {
   const user = req.session.user_id;
@@ -100,9 +103,9 @@ app.put('/urls/:id', (req, res) => {
 });
 
 //
-//Delete URL Page [POST /URLS/:ID/DELETE]
+//Delete URL Page [DELETE /URLS/:ID/DELETE]
 //
-app.delete('/urls/:id/delete', (req, res) => {
+app.delete('/urls/:id', (req, res) => {
   const user = req.session.user_id;
   if (getUserURLs(user, urlDatabase)[req.params.id]) {
     delete urlDatabase[req.params.id];
