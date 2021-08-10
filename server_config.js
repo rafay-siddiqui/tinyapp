@@ -10,7 +10,7 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieSession({
   name: 'session',
-  keys: ["tiniestApp"],
+  keys: ["tiniestApp", "anotherKey"],
 }));
 
 
@@ -68,9 +68,9 @@ const uniqueStringGenerator = () => {
   }
 };
 
-const emailLookup = (email) => {
-  for (let user in users) {
-    if (users[user].email === email) {
+const emailLookup = (email, database) => {
+  for (let user in database) {
+    if (database[user].email === email) {
       return user;
     }
   }

@@ -103,10 +103,10 @@ app.get('/login', (req, res) => {
 });
 
 app.post('/login', (req, res) => {
-  if (!emailLookup(req.body.email)) {
+  if (!emailLookup(req.body.email, users)) {
     return res.status(403).send("Error 403: No Account With Given Email");
   }
-  let user = emailLookup(req.body.email);
+  let user = emailLookup(req.body.email, users);
   if (!bcrypt.compareSync(req.body.password, users[user].password)) {
     return res.status(403).send("Error 403: Incorrect Password");
   }
@@ -133,7 +133,7 @@ app.post('/register', (req, res) => {
   const newUser = uniqueStringGenerator();
   if (!req.body.email || !req.body.password) {
     return res.status(400).send("Error 400: Empty Email or Password");
-  } else if (emailLookup(req.body.email)) {
+  } else if (emailLookup(req.body.email, users)) {
     return res.status(400).send("Error 400: Email already registered");
   }
   users[newUser] = {
