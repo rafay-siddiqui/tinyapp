@@ -2,15 +2,16 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
 const cookieSession = require('cookie-session');
 const PORT = 8080;
 
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookieParser());
-app.use(cookieSession());
+app.use(cookieSession({
+  name: 'session',
+  keys: ["tiniestApp"],
+}));
 
 
 //Object storing all the shortened urls

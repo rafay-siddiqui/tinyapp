@@ -110,7 +110,7 @@ app.post('/login', (req, res) => {
   if (!bcrypt.compareSync(req.body.password, users[user].password)) {
     return res.status(403).send("Error 403: Incorrect Password");
   }
-  res.session.user_id = user;
+  req.session.user_id = user;
   res.redirect('/urls');
 });
 
@@ -141,7 +141,7 @@ app.post('/register', (req, res) => {
     email: req.body.email,
     password: bcrypt.hashSync(req.body.password, 10),
   };
-  res.session.user_id = newUser;
+  req.session.user_id = newUser;
   res.redirect('/urls');
 });
 
