@@ -1,9 +1,9 @@
-//Configuration of libraries and port
+//This module contains configuration of libraries and port as well as the database templates for this application
+const cookieSession = require('cookie-session');
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
-const cookieSession = require('cookie-session');
 const PORT = 8080;
 
 app.set('view engine', 'ejs');
@@ -14,19 +14,30 @@ app.use(cookieSession({
 }));
 
 
+let currentDate = new Date();
+
 //Object storing all the shortened urls
 const urlDatabase = {
   b6UTxQ: {
     longURL: "https://www.tsn.ca",
-    userID: "aJ48lW"
+    userID: "aJ48lW",
+    created: `${currentDate.getMonth()+1}/${currentDate.getDate()}/${currentDate.getFullYear()}`,
+    clicks: 0,
+    visitors: []
   },
   i3BoGr: {
     longURL: "https://www.google.ca",
-    userID: "aJ48lW"
+    userID: "aJ48lW",
+    created: `${currentDate.getMonth()+1}/${currentDate.getDate()}/${currentDate.getFullYear()}`,
+    clicks: 0,
+    visitors: []
   },
   thePed: {
     longURL: "https://www.pedicel.ca",
-    userID: "theRaf"
+    userID: "theRaf",
+    created: `${currentDate.getMonth()+1}/${currentDate.getDate()}/${currentDate.getFullYear()}`,
+    clicks: 0,
+    visitors: []
   },
 };
 
@@ -56,4 +67,5 @@ module.exports = {
   urlDatabase,
   users,
   bcrypt,
+  currentDate,
 };

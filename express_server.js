@@ -4,7 +4,7 @@ const {
   urlDatabase,
   users,
   bcrypt,
-
+  currentDate,
 } = require('./server_config');
 
 const {
@@ -13,17 +13,24 @@ const {
   getUserURLs,
 } = require('./helpers');
 
-// /url page render and root page redirection
-app.get("/", (req, res) => {
-  res.redirect("/urls");
+//
+// URLs Index Page [GET /, GET /URLS]
+//
+app.get('/', (req, res) => {
+  if (req.session.user_id) {
+  res.redirect('/urls');
+  } else {
+    res.redirect('/login');
+  }
 });
 
-app.get("/urls", (req, res) => {
+app.get('/urls', (req, res) => {
   const userID = req.session.user_id;
   const templateVars = {
     user: users[userID],
     urls: getUserURLs(userID, urlDatabase),
     userID,
+    urlDatabase,
   };
   if (!userID) {
     res.status(401);
@@ -31,20 +38,9 @@ app.get("/urls", (req, res) => {
   res.render('urls_index', templateVars);
 });
 
-//Create new URL form submission and redirection to shortURL page
-app.post('/urls', (req, res) => {
-  const newUrl = uniqueStringGenerator(urlDatabase);
-  if (req.session.user_id) {
-    urlDatabase[newUrl] = {
-      longURL: req.body.longURL,
-      userID: req.session.user_id,
-    };
-    res.redirect(`/urls/${newUrl}`);
-  } else {
-    return res.status(401).send("Error 401: Unauthorized Client Access, Please Log In\n");
-  }
-});
-
+//
+// New URL Creation [GET URLS/NEW, POST /URLS]
+//
 app.get('/urls/new', (req, res) => {
   const templateVars = {
     user: users[req.session.user_id],
@@ -52,21 +48,47 @@ app.get('/urls/new', (req, res) => {
   if (req.session.user_id) {
     res.render('urls_new', templateVars);
   } else {
+    res.status(401);
     res.redirect('/login');
   }
 });
 
-//Short URL Page
-app.get('/urls/:shortURL', (req, res) => {
+app.post('/urls', (req, res) => {
+  const newUrl = uniqueStringGenerator(urlDatabase);
+  if (req.session.user_id) {
+    urlDatabase[newUrl] = {
+      longURL: req.body.longURL,
+      userID: req.session.user_id,
+      created: `${currentDate.getMonth()+1}/${currentDate.getDate()}/${currentDate.getFullYear()}`,
+      clicks: 0,
+      visitors: [],
+    };
+    console.log(urlDatabase);
+    res.redirect(`/urls/${newUrl}`);
+  } else {
+    return res.status(401).send("Error 401: Unauthorized Client Access, Please Log In\n");
+  }
+});
+
+//
+//ShortURL Info Page [GET /URLS/:ID]
+//
+app.get('/urls/:id', (req, res) => {
+  if (!urlDatabase[req.params.id]) {
+    return res.status(404).send("Error 404: Short URL Not Found")
+  }
   const templateVars = {
     user: users[req.session.user_id],
-    shortURL: req.params.shortURL,
-    longURL: urlDatabase[req.params.shortURL].longURL,
+    id: req.params.id,
+    longURL: urlDatabase[req.params.id].longURL,
+    urlDatabase,
   };
   res.render('urls_show', templateVars);
 });
 
-//Update URL
+//
+//Update URL Page [POST /URLS/:ID]
+//
 app.post('/urls/:id', (req, res) => {
   const user = req.session.user_id;
   if (getUserURLs(user, urlDatabase)[req.params.id]) {
@@ -77,28 +99,41 @@ app.post('/urls/:id', (req, res) => {
   }
 });
 
-//Delete URL
-app.post('/urls/:shortURL/delete', (req, res) => {
+//
+//Delete URL Page [POST /URLS/:ID/DELETE]
+//
+app.post('/urls/:id/delete', (req, res) => {
   const user = req.session.user_id;
-  if (getUserURLs(user, urlDatabase)[req.params.shortURL]) {
-    delete urlDatabase[req.params.shortURL];
+  if (getUserURLs(user, urlDatabase)[req.params.id]) {
+    delete urlDatabase[req.params.id];
     res.redirect('/urls');
   } else {
     return res.status(401).send("Error 403: Unauthorized Access to Edit Selected URL\n");
   }
 });
 
-//Short URL Redirection
-app.get("/u/:shortURL", (req, res) => {
-  if (!urlDatabase[req.params.shortURL]) {
+//
+// Short URL Redirection [GET /U/:ID]
+//
+app.get('/u/:id', (req, res) => {
+  if (!urlDatabase[req.params.id]) {
     return res.status(404).send("Error 404: Short URL Not Found");
   }
-  const longURL = urlDatabase[req.params.shortURL].longURL;
+  const longURL = urlDatabase[req.params.id].longURL;
+  urlDatabase[req.params.id].clicks += 1;
+  if (users[req.session.user_id] && !(urlDatabase[req.params.id].visitors).includes(users[req.session.user_id].email)) {
+    (urlDatabase[req.params.id].visitors).push(users[req.session.user_id].email);
+  }
   res.redirect(longURL);
 });
 
-//Email Log in GET and POST cookie handling
+//
+// Log in, log out, and registration [GET /LOGIN, POST /LOGIN, POST /LOGOUT, GET /REGISTER, POST /REGISTER]
+//
 app.get('/login', (req, res) => {
+  if (users[req.session.user_id]) {
+    return res.redirect('/urls');
+  }
   const templateVars = {
     user: users[req.session.user_id],
   };
@@ -117,21 +152,21 @@ app.post('/login', (req, res) => {
   res.redirect('/urls');
 });
 
-//Email Log out POST cookie clearing
 app.post('/logout', (req, res) => {
   req.session.user_id = null;
   res.redirect('/urls');
 });
 
-//Registration page
 app.get('/register', (req, res) => {
+  if (users[req.session.user_id]) {
+    return res.redirect('/urls');
+  }
   const templateVars = {
     user: users[req.session.user_id],
   };
   res.render('register', templateVars);
 });
 
-//Store New User
 app.post('/register', (req, res) => {
   const newUser = uniqueStringGenerator(urlDatabase);
   if (!req.body.email || !req.body.password) {
@@ -148,7 +183,9 @@ app.post('/register', (req, res) => {
   res.redirect('/urls');
 });
 
+//
 //Server listens for client requests
+//
 app.listen(PORT, () => {
   console.log(`Example app is listening on ${PORT}!`);
 });

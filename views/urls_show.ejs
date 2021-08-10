@@ -14,10 +14,21 @@
     <div class="card-header"></div>
     <div class="card-body">
       <h5 class="card-title">TinyURL for: <%= longURL %></h5>
-      <p class="card-text">Short URL: <a href="/u/<%= shortURL%>"><%= shortURL %></a></p>
+      <p class="card-text">Short URL: <a href="/u/<%= id%>"><%= id %></a></p>
     </div>
 
-    <form class="form-inline card text-center bg-light" action="/urls/<%=shortURL%>" method="POST">
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">New URL</th>
+          <th scope="col">Date Created</th>
+          <th scope="col">Total Clicks</th>
+          <th scope="col">Unique Visitors</th>
+        </tr>
+      </thead>
+    </table>
+
+    <form class="form-inline card text-center bg-light" action="/urls/<%=id%>" method="POST">
       <div class="form-group p-3 mb-3">
         <label for="longURL">New URL:</label>
         <input class="form-control" type="text" name="longURL" placeholder="http://" style="width: 300px; margin: 1em">

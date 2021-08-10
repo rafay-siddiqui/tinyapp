@@ -1,3 +1,5 @@
+const e = require("express");
+
 //Random string generation and uniqueness check
 const generateRandomString = () => {
   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -32,12 +34,15 @@ const getUserURLs = (user, database) => {
     if (user === database[link].userID)
       shortURLs[link] = database[link].longURL;
   }
-  return shortURLs;
+  if (shortURLs === {}) {
+    return undefined;
+  } else {
+    return shortURLs;
+  }
 };
 
 module.exports = {
   uniqueStringGenerator,
   emailLookup,
   getUserURLs,
-
 };

@@ -22,6 +22,9 @@
           <th scope="col">Long URL</th>
           <th scope="col">Edit</th>
           <th scope="col">Delete</th>
+          <th scope="col">Date<br>Created</th>
+          <th scope="col">Total<br>Clicks</th>
+          <th scope="col">Unique<br>Visitors</th>
         </tr>
       </thead>
       <tbody>
@@ -39,6 +42,9 @@
                 <button formmethod="POST" type="submit" class="btn btn-outline-danger">Delete</i></button>
               </form>
             </td>
+            <td><%= urlDatabase[url].created %></td>
+            <td><%= urlDatabase[url].clicks %></td>
+            <td><%= urlDatabase[url].visitors.length %></td>
           </tr>
           <% } %>
       </tbody>
